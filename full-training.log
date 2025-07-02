@@ -1,265 +1,146 @@
 (expts) PS C:\Users\Praveen.TN\Downloads\Experiments\Understanding> python main.py --mode full_training
 Using device: cpu
-2025-07-01 19:56:06,785 - INFO - ============================================================
-2025-07-01 19:56:06,786 - INFO - ENHANCED UNDERSTANDING FRAMEWORK
-2025-07-01 19:56:06,786 - INFO - ============================================================
-2025-07-01 19:56:06,786 - INFO - Mode: full_training
-2025-07-01 19:56:06,786 - INFO - Device: cpu
-2025-07-01 19:56:06,786 - INFO - Results directory: results_20250701_195606
-2025-07-01 19:56:06,786 - INFO - Starting Full Training (30-60 minutes)
-2025-07-01 19:56:06,797 - INFO - Model parameters: 1,780,631
-2025-07-01 19:56:06,797 - INFO - Starting meta-training with human-like mechanisms...
-2025-07-01 19:56:08,606 - INFO - Starting enhanced meta-training for 1000 iterations
-Meta-training:   0%|                                                                                                                                                                                                                        | 0/1000 [00:00<?, ?it/s]2025-07-01 19:56:08,821 - INFO - Iter 0: Meta loss = 1.6155, Inner loss = 1.6144, Active schemas = 3, WM slots = 7, LR = 0.001000
-Meta-training:   2%|█████▏                                                                                                                                                                                                         | 25/1000 [00:04<03:29,  4.66it/s]2025-07-01 19:56:13,696 - INFO - Iter 25: Meta loss = 1.6855, Inner loss = 1.6857, Active schemas = 128, WM slots = 7, LR = 0.000998
-Meta-training:   5%|██████████▎                                                                                                                                                                                                    | 50/1000 [00:10<03:44,  4.23it/s]2025-07-01 19:56:19,582 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:19,614 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:19,649 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:19,674 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:19,699 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:19,700 - INFO - Iter 50: Test accuracy = 0.000
-2025-07-01 19:56:19,701 - INFO - Iter 50: Meta loss = 1.6356, Inner loss = 1.6137, Active schemas = 128, WM slots = 7, LR = 0.000994
-Meta-training:   8%|███████████████▌                                                                                                                                                                                               | 75/1000 [00:18<04:58,  3.09it/s]2025-07-01 19:56:27,153 - INFO - Iter 75: Meta loss = 1.5975, Inner loss = 1.6727, Active schemas = 128, WM slots = 7, LR = 0.000986
-Meta-training:  10%|████████████████████▌                                                                                                                                                                                         | 100/1000 [00:24<03:10,  4.73it/s]2025-07-01 19:56:33,196 - INFO - Iter 100: Forgot 0 schemas, 128 remain active
-2025-07-01 19:56:33,198 - INFO - Iter 100: Memory consolidation completed
-2025-07-01 19:56:33,221 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:33,248 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:33,272 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:33,289 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:33,310 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:33,311 - INFO - Iter 100: Test accuracy = 0.000
-2025-07-01 19:56:33,312 - INFO - Iter 100: Meta loss = 1.6205, Inner loss = 1.6571, Active schemas = 128, WM slots = 7, LR = 0.000975
-Meta-training:  12%|█████████████████████████▊                                                                                                                                                                                    | 125/1000 [00:34<06:05,  2.40it/s]2025-07-01 19:56:43,237 - INFO - Iter 125: Meta loss = 1.6076, Inner loss = 1.6619, Active schemas = 128, WM slots = 7, LR = 0.000961
-Meta-training:  15%|██████████████████████████████▉                                                                                                                                                                               | 150/1000 [00:40<03:04,  4.61it/s]2025-07-01 19:56:49,002 - INFO - Iter 150: Forgot 0 schemas, 128 remain active
-2025-07-01 19:56:49,033 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:49,060 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:49,089 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:49,111 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:49,136 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:56:49,137 - INFO - Iter 150: Test accuracy = 0.000
-2025-07-01 19:56:49,139 - INFO - Iter 150: Meta loss = 1.5925, Inner loss = 1.5415, Active schemas = 128, WM slots = 7, LR = 0.000945
-Meta-training:  18%|████████████████████████████████████                                                                                                                                                                          | 175/1000 [00:45<03:05,  4.44it/s]2025-07-01 19:56:54,823 - INFO - Iter 175: Meta loss = 1.6357, Inner loss = 1.6207, Active schemas = 128, WM slots = 7, LR = 0.000925
-Meta-training:  20%|█████████████████████████████████████████▏                                                                                                                                                                    | 200/1000 [00:51<03:09,  4.22it/s]2025-07-01 19:57:00,659 - INFO - Iter 200: Forgot 0 schemas, 128 remain active
-2025-07-01 19:57:00,660 - INFO - Iter 200: Memory consolidation completed
-2025-07-01 19:57:00,685 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:00,715 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:00,741 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:00,765 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:00,791 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:00,792 - INFO - Iter 200: Test accuracy = 0.000
-2025-07-01 19:57:00,793 - INFO - Iter 200: Meta loss = 1.6237, Inner loss = 1.6096, Active schemas = 128, WM slots = 7, LR = 0.000904
-Meta-training:  22%|██████████████████████████████████████████████▎                                                                                                                                                               | 225/1000 [00:57<02:38,  4.89it/s]2025-07-01 19:57:06,067 - INFO - Iter 225: Meta loss = 1.5854, Inner loss = 1.6319, Active schemas = 128, WM slots = 7, LR = 0.000879
-Meta-training:  25%|███████████████████████████████████████████████████▌                                                                                                                                                          | 250/1000 [01:03<03:26,  3.64it/s]2025-07-01 19:57:12,858 - INFO - Iter 250: Forgot 0 schemas, 128 remain active
-2025-07-01 19:57:12,986 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:13,095 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:13,286 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:13,537 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:13,681 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:13,691 - INFO - Iter 250: Test accuracy = 0.000
-2025-07-01 19:57:13,701 - INFO - Iter 250: Meta loss = 1.5443, Inner loss = 1.5702, Active schemas = 128, WM slots = 6, LR = 0.000852
-Meta-training:  28%|████████████████████████████████████████████████████████▋                                                                                                                                                     | 275/1000 [01:11<02:36,  4.63it/s]2025-07-01 19:57:20,557 - INFO - Iter 275: Meta loss = 1.5936, Inner loss = 1.6070, Active schemas = 128, WM slots = 7, LR = 0.000824
-Meta-training:  30%|█████████████████████████████████████████████████████████████▊                                                                                                                                                | 300/1000 [01:17<02:46,  4.20it/s]2025-07-01 19:57:26,224 - INFO - Iter 300: Forgot 0 schemas, 128 remain active
-2025-07-01 19:57:26,225 - INFO - Iter 300: Memory consolidation completed
-2025-07-01 19:57:26,251 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:26,276 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:26,306 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:26,330 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:26,358 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:26,359 - INFO - Iter 300: Test accuracy = 0.000
-2025-07-01 19:57:26,359 - INFO - Iter 300: Meta loss = 1.5228, Inner loss = 1.5524, Active schemas = 128, WM slots = 7, LR = 0.000793
-Meta-training:  32%|██████████████████████████████████████████████████████████████████▉                                                                                                                                           | 325/1000 [01:23<03:25,  3.29it/s]2025-07-01 19:57:32,645 - INFO - Iter 325: Meta loss = 1.6309, Inner loss = 1.6181, Active schemas = 128, WM slots = 7, LR = 0.000760
-Meta-training:  35%|████████████████████████████████████████████████████████████████████████                                                                                                                                      | 350/1000 [01:30<04:28,  2.42it/s]2025-07-01 19:57:40,046 - INFO - Iter 350: Forgot 0 schemas, 128 remain active
-2025-07-01 19:57:40,097 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:40,151 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:40,201 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:40,247 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:40,297 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:40,298 - INFO - Iter 350: Test accuracy = 0.000
-2025-07-01 19:57:40,299 - INFO - Iter 350: Meta loss = 1.6054, Inner loss = 1.6104, Active schemas = 128, WM slots = 7, LR = 0.000726
-Meta-training:  38%|█████████████████████████████████████████████████████████████████████████████▎                                                                                                                                | 375/1000 [01:38<02:17,  4.54it/s]2025-07-01 19:57:47,327 - INFO - Iter 375: Meta loss = 1.5433, Inner loss = 1.4564, Active schemas = 128, WM slots = 7, LR = 0.000690
-Meta-training:  40%|██████████████████████████████████████████████████████████████████████████████████▍                                                                                                                           | 400/1000 [01:43<01:48,  5.53it/s]2025-07-01 19:57:52,199 - INFO - Iter 400: Forgot 0 schemas, 128 remain active
-2025-07-01 19:57:52,200 - INFO - Iter 400: Memory consolidation completed
-2025-07-01 19:57:52,226 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:52,251 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:52,273 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:52,293 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:52,315 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:57:52,315 - INFO - Iter 400: Test accuracy = 0.000
-2025-07-01 19:57:52,316 - INFO - Iter 400: Meta loss = 1.6158, Inner loss = 1.6303, Active schemas = 128, WM slots = 7, LR = 0.000653
-Meta-training:  42%|███████████████████████████████████████████████████████████████████████████████████████▌                                                                                                                      | 425/1000 [01:48<01:44,  5.51it/s]2025-07-01 19:57:56,919 - INFO - Iter 425: Meta loss = 1.6187, Inner loss = 1.6130, Active schemas = 128, WM slots = 7, LR = 0.000615
-Meta-training:  45%|████████████████████████████████████████████████████████████████████████████████████████████▋                                                                                                                 | 450/1000 [01:52<01:40,  5.45it/s]2025-07-01 19:58:01,569 - INFO - Iter 450: Forgot 0 schemas, 128 remain active
-2025-07-01 19:58:01,594 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:01,614 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:01,636 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:01,659 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:01,682 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:01,683 - INFO - Iter 450: Test accuracy = 0.000
-2025-07-01 19:58:01,683 - INFO - Iter 450: Meta loss = 1.2631, Inner loss = 1.2146, Active schemas = 128, WM slots = 7, LR = 0.000577
-Meta-training:  48%|█████████████████████████████████████████████████████████████████████████████████████████████████▊                                                                                                            | 475/1000 [01:57<01:37,  5.40it/s]2025-07-01 19:58:06,367 - INFO - Iter 475: Meta loss = 1.6039, Inner loss = 1.6112, Active schemas = 128, WM slots = 7, LR = 0.000538
-Meta-training:  50%|███████████████████████████████████████████████████████████████████████████████████████████████████████                                                                                                       | 500/1000 [02:02<01:31,  5.46it/s]2025-07-01 19:58:10,931 - INFO - Iter 500: Forgot 0 schemas, 128 remain active
-2025-07-01 19:58:10,932 - INFO - Iter 500: Memory consolidation completed
-2025-07-01 19:58:10,955 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:10,980 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:11,000 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:11,019 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:11,042 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:11,043 - INFO - Iter 500: Test accuracy = 0.000
-2025-07-01 19:58:11,044 - INFO - Iter 500: Meta loss = 1.6168, Inner loss = 1.6227, Active schemas = 128, WM slots = 7, LR = 0.000498
-Meta-training:  52%|████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                                                                                 | 525/1000 [02:07<01:34,  5.03it/s]2025-07-01 19:58:15,847 - INFO - Iter 525: Meta loss = 1.6194, Inner loss = 1.5802, Active schemas = 128, WM slots = 7, LR = 0.000459
-Meta-training:  55%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                                                                                            | 550/1000 [02:11<01:28,  5.11it/s]2025-07-01 19:58:20,594 - INFO - Iter 550: Forgot 0 schemas, 128 remain active
-2025-07-01 19:58:20,628 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:20,673 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:20,704 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:20,732 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:20,766 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:20,767 - INFO - Iter 550: Test accuracy = 0.000
-2025-07-01 19:58:20,768 - INFO - Iter 550: Meta loss = 1.6232, Inner loss = 1.6343, Active schemas = 128, WM slots = 7, LR = 0.000420
-Meta-training:  57%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                                                                       | 575/1000 [02:18<02:31,  2.81it/s]2025-07-01 19:58:27,393 - INFO - Iter 575: Meta loss = 1.6225, Inner loss = 1.6106, Active schemas = 128, WM slots = 7, LR = 0.000382
-Meta-training:  60%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                                                                  | 600/1000 [02:24<01:15,  5.29it/s]2025-07-01 19:58:32,903 - INFO - Iter 600: Forgot 0 schemas, 128 remain active
-2025-07-01 19:58:32,905 - INFO - Iter 600: Memory consolidation completed
-2025-07-01 19:58:32,924 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:32,948 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:32,972 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:32,993 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:33,017 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:33,018 - INFO - Iter 600: Test accuracy = 0.000
-2025-07-01 19:58:33,019 - INFO - Iter 600: Meta loss = 1.6166, Inner loss = 1.5522, Active schemas = 128, WM slots = 7, LR = 0.000344
-Meta-training:  62%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                                                             | 625/1000 [02:30<01:34,  3.96it/s]2025-07-01 19:58:39,430 - INFO - Iter 625: Meta loss = 1.3740, Inner loss = 1.4395, Active schemas = 128, WM slots = 7, LR = 0.000307
-Meta-training:  65%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                                                                        | 650/1000 [02:35<01:09,  5.03it/s]2025-07-01 19:58:44,538 - INFO - Iter 650: Forgot 0 schemas, 128 remain active
-2025-07-01 19:58:44,563 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:44,589 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:44,613 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:44,641 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:44,665 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:44,666 - INFO - Iter 650: Test accuracy = 0.000
-2025-07-01 19:58:44,667 - INFO - Iter 650: Meta loss = 1.4896, Inner loss = 1.5242, Active schemas = 128, WM slots = 7, LR = 0.000272
-Meta-training:  68%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████                                                                   | 675/1000 [02:41<01:30,  3.61it/s]2025-07-01 19:58:50,478 - INFO - Iter 675: Meta loss = 1.6030, Inner loss = 1.6166, Active schemas = 128, WM slots = 7, LR = 0.000237
-Meta-training:  70%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                                             | 700/1000 [02:47<01:34,  3.19it/s]2025-07-01 19:58:56,457 - INFO - Iter 700: Forgot 0 schemas, 128 remain active
-2025-07-01 19:58:56,458 - INFO - Iter 700: Memory consolidation completed
-2025-07-01 19:58:56,486 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:56,518 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:56,546 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:56,568 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:56,594 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:58:56,595 - INFO - Iter 700: Test accuracy = 0.000
-2025-07-01 19:58:56,595 - INFO - Iter 700: Meta loss = 1.5913, Inner loss = 1.6168, Active schemas = 128, WM slots = 7, LR = 0.000205
-Meta-training:  72%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                                                        | 725/1000 [02:52<00:55,  4.95it/s]2025-07-01 19:59:01,726 - INFO - Iter 725: Meta loss = 1.5680, Inner loss = 1.5464, Active schemas = 128, WM slots = 7, LR = 0.000174
-Meta-training:  75%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                                   | 750/1000 [02:58<00:46,  5.38it/s]2025-07-01 19:59:06,897 - INFO - Iter 750: Forgot 0 schemas, 128 remain active
-2025-07-01 19:59:06,917 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:06,942 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:06,963 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:06,985 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:07,007 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:07,008 - INFO - Iter 750: Test accuracy = 0.000
-2025-07-01 19:59:07,009 - INFO - Iter 750: Meta loss = 1.6038, Inner loss = 1.6218, Active schemas = 128, WM slots = 7, LR = 0.000145
-Meta-training:  78%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                              | 775/1000 [03:03<00:50,  4.44it/s]2025-07-01 19:59:11,968 - INFO - Iter 775: Meta loss = 1.6761, Inner loss = 1.6112, Active schemas = 128, WM slots = 7, LR = 0.000119
-Meta-training:  80%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                         | 800/1000 [03:08<00:39,  5.05it/s]2025-07-01 19:59:17,065 - INFO - Iter 800: Forgot 0 schemas, 128 remain active
-2025-07-01 19:59:17,066 - INFO - Iter 800: Memory consolidation completed
-2025-07-01 19:59:17,088 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:17,112 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:17,135 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:17,159 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:17,182 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:17,183 - INFO - Iter 800: Test accuracy = 0.000
-2025-07-01 19:59:17,183 - INFO - Iter 800: Meta loss = 1.6349, Inner loss = 1.5802, Active schemas = 128, WM slots = 7, LR = 0.000095
-Meta-training:  82%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                                    | 825/1000 [03:13<00:38,  4.59it/s]2025-07-01 19:59:22,493 - INFO - Iter 825: Meta loss = 1.5304, Inner loss = 1.5360, Active schemas = 128, WM slots = 7, LR = 0.000073
-Meta-training:  85%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████                               | 850/1000 [03:18<00:28,  5.34it/s]2025-07-01 19:59:27,449 - INFO - Iter 850: Forgot 0 schemas, 128 remain active
-2025-07-01 19:59:27,474 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:27,497 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:27,521 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:27,542 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:27,564 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:27,565 - INFO - Iter 850: Test accuracy = 0.000
-2025-07-01 19:59:27,565 - INFO - Iter 850: Meta loss = 1.6154, Inner loss = 1.6122, Active schemas = 128, WM slots = 7, LR = 0.000054
-Meta-training:  88%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                         | 875/1000 [03:23<00:23,  5.32it/s]2025-07-01 19:59:32,711 - INFO - Iter 875: Meta loss = 1.5309, Inner loss = 1.6380, Active schemas = 128, WM slots = 6, LR = 0.000037
-Meta-training:  90%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                    | 900/1000 [03:28<00:18,  5.50it/s]2025-07-01 19:59:37,391 - INFO - Iter 900: Forgot 0 schemas, 128 remain active
-2025-07-01 19:59:37,392 - INFO - Iter 900: Memory consolidation completed
-2025-07-01 19:59:37,422 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:37,443 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:37,465 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:37,487 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:37,511 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:37,511 - INFO - Iter 900: Test accuracy = 0.000
-2025-07-01 19:59:37,512 - INFO - Iter 900: Meta loss = 1.4854, Inner loss = 1.5056, Active schemas = 128, WM slots = 7, LR = 0.000024
-Meta-training:  92%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌               | 925/1000 [03:33<00:14,  5.10it/s]2025-07-01 19:59:42,430 - INFO - Iter 925: Meta loss = 1.6237, Inner loss = 1.6098, Active schemas = 128, WM slots = 7, LR = 0.000013
-Meta-training:  95%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋          | 950/1000 [03:39<00:10,  4.61it/s]2025-07-01 19:59:48,299 - INFO - Iter 950: Forgot 0 schemas, 128 remain active
-2025-07-01 19:59:48,322 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:48,347 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:48,368 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:48,387 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:48,410 - WARNING - Evaluation task failed: element 0 of tensors does not require grad and does not have a grad_fn
-2025-07-01 19:59:48,411 - INFO - Iter 950: Test accuracy = 0.000
-2025-07-01 19:59:48,412 - INFO - Iter 950: Meta loss = 1.6000, Inner loss = 1.6304, Active schemas = 128, WM slots = 6, LR = 0.000006
-Meta-training:  98%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊     | 975/1000 [03:44<00:05,  4.90it/s]2025-07-01 19:59:53,565 - INFO - Iter 975: Meta loss = 1.6079, Inner loss = 1.6169, Active schemas = 128, WM slots = 7, LR = 0.000001
-Meta-training: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1000/1000 [03:49<00:00,  4.35it/s] 
-2025-07-01 19:59:58,519 - INFO - Meta-training completed!
-2025-07-01 19:59:58,520 - INFO -
+2025-07-02 13:30:10,595 - INFO - ============================================================
+2025-07-02 13:30:10,595 - INFO - ENHANCED UNDERSTANDING FRAMEWORK
+2025-07-02 13:30:10,595 - INFO - ============================================================
+2025-07-02 13:30:10,595 - INFO - Mode: full_training
+2025-07-02 13:30:10,596 - INFO - Device: cpu
+2025-07-02 13:30:10,596 - INFO - Results directory: results_20250702_133010
+2025-07-02 13:30:10,596 - INFO - Starting Full Training (30-60 minutes)
+2025-07-02 13:30:10,619 - INFO - Model parameters: 1,910,679
+2025-07-02 13:30:10,619 - INFO - Starting meta-training with human-like mechanisms...
+INFO:meta_training:Starting enhanced meta-training for 1000 iterations
+Meta-training:   0%|                                                                                                                                                                                               | 0/1000 [00:00<?, ?it/s]INFO:meta_training:Iter 0: Meta loss = 1.4658, Inner loss = 1.4182, Active schemas = 1, WM slots = 7, LR = 0.001000
+Meta-training:   2%|████▎                                                                                                                                                                                 | 24/1000 [00:02<01:30, 10.84it/s]INFO:meta_training:Iter 25: Meta loss = 1.6217, Inner loss = 1.5996, Active schemas = 1, WM slots = 7, LR = 0.000998
+Meta-training:   5%|████████▉                                                                                                                                                                             | 49/1000 [00:04<01:36,  9.88it/s]INFO:meta_training:Iter 50: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 50: Test accuracy = 0.200
+INFO:meta_training:Iter 50: Meta loss = 1.4958, Inner loss = 1.7143, Active schemas = 1, WM slots = 7, LR = 0.000994
+Meta-training:   7%|█████████████▍                                                                                                                                                                        | 74/1000 [00:07<01:27, 10.52it/s]INFO:meta_training:Iter 75: Meta loss = 1.7379, Inner loss = 1.7170, Active schemas = 1, WM slots = 7, LR = 0.000986
+Meta-training:  10%|██████████████████                                                                                                                                                                   | 100/1000 [00:10<01:26, 10.39it/s]INFO:meta_training:Iter 100: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 100: Memory consolidation completed
+INFO:meta_training:Iter 100: Test accuracy = 0.280
+INFO:meta_training:Iter 100: Meta loss = 1.6180, Inner loss = 1.6314, Active schemas = 1, WM slots = 7, LR = 0.000975
+Meta-training:  12%|██████████████████████▋                                                                                                                                                              | 125/1000 [00:12<01:55,  7.59it/s]INFO:meta_training:Iter 125: Meta loss = 1.6237, Inner loss = 1.6315, Active schemas = 1, WM slots = 7, LR = 0.000961
+Meta-training:  15%|██████████████████████████▉                                                                                                                                                          | 149/1000 [00:15<01:20, 10.52it/s]INFO:meta_training:Iter 150: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 150: Test accuracy = 0.320
+INFO:meta_training:Iter 150: Meta loss = 1.5345, Inner loss = 1.5650, Active schemas = 1, WM slots = 7, LR = 0.000945
+Meta-training:  18%|███████████████████████████████▋                                                                                                                                                     | 175/1000 [00:18<01:28,  9.34it/s]INFO:meta_training:Iter 175: Meta loss = 1.5475, Inner loss = 1.4723, Active schemas = 1, WM slots = 7, LR = 0.000925
+Meta-training:  20%|████████████████████████████████████                                                                                                                                                 | 199/1000 [00:20<01:17, 10.35it/s]INFO:meta_training:Iter 200: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 200: Memory consolidation completed
+INFO:meta_training:Iter 200: Test accuracy = 0.507
+INFO:meta_training:Iter 200: Meta loss = 1.7030, Inner loss = 1.5693, Active schemas = 1, WM slots = 7, LR = 0.000904
+Meta-training:  22%|████████████████████████████████████████▋                                                                                                                                            | 225/1000 [00:23<01:29,  8.69it/s]INFO:meta_training:Iter 225: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000879
+Meta-training:  25%|█████████████████████████████████████████████▎                                                                                                                                       | 250/1000 [00:26<01:28,  8.48it/s]INFO:meta_training:Iter 250: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 250: Test accuracy = 0.173
+INFO:meta_training:Iter 250: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000852
+Meta-training:  28%|█████████████████████████████████████████████████▊                                                                                                                                   | 275/1000 [00:29<01:26,  8.35it/s]INFO:meta_training:Iter 275: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000824
+Meta-training:  30%|██████████████████████████████████████████████████████▎                                                                                                                              | 300/1000 [00:32<01:18,  8.91it/s]INFO:meta_training:Iter 300: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 300: Memory consolidation completed
+INFO:meta_training:Iter 300: Test accuracy = 0.160
+INFO:meta_training:Iter 300: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000793
+Meta-training:  32%|██████████████████████████████████████████████████████████▊                                                                                                                          | 325/1000 [00:35<01:18,  8.62it/s]INFO:meta_training:Iter 325: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000760
+Meta-training:  35%|███████████████████████████████████████████████████████████████▎                                                                                                                     | 350/1000 [00:38<01:12,  8.93it/s]INFO:meta_training:Iter 350: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 350: Test accuracy = 0.200
+INFO:meta_training:Iter 350: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000726
+Meta-training:  38%|███████████████████████████████████████████████████████████████████▉                                                                                                                 | 375/1000 [00:41<01:14,  8.37it/s]INFO:meta_training:Iter 375: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000690
+Meta-training:  40%|████████████████████████████████████████████████████████████████████████▍                                                                                                            | 400/1000 [00:44<01:05,  9.14it/s]INFO:meta_training:Iter 400: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 400: Memory consolidation completed
+INFO:meta_training:Iter 400: Test accuracy = 0.187
+INFO:meta_training:Iter 400: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000653
+Meta-training:  42%|████████████████████████████████████████████████████████████████████████████▉                                                                                                        | 425/1000 [00:47<01:08,  8.44it/s]INFO:meta_training:Iter 425: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000615
+Meta-training:  45%|█████████████████████████████████████████████████████████████████████████████████▍                                                                                                   | 450/1000 [00:50<01:02,  8.76it/s]INFO:meta_training:Iter 450: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 450: Test accuracy = 0.200
+INFO:meta_training:Iter 450: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000577
+Meta-training:  48%|█████████████████████████████████████████████████████████████████████████████████████▉                                                                                               | 475/1000 [00:54<01:06,  7.88it/s]INFO:meta_training:Iter 475: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000538
+Meta-training:  50%|██████████████████████████████████████████████████████████████████████████████████████████▌                                                                                          | 500/1000 [00:56<00:57,  8.74it/s]INFO:meta_training:Iter 500: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 500: Memory consolidation completed
+INFO:meta_training:Iter 500: Test accuracy = 0.173
+INFO:meta_training:Iter 500: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000498
+Meta-training:  52%|███████████████████████████████████████████████████████████████████████████████████████████████                                                                                      | 525/1000 [01:00<00:58,  8.14it/s]INFO:meta_training:Iter 525: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000459
+Meta-training:  55%|███████████████████████████████████████████████████████████████████████████████████████████████████▌                                                                                 | 550/1000 [01:03<00:54,  8.32it/s]INFO:meta_training:Iter 550: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 550: Test accuracy = 0.200
+INFO:meta_training:Iter 550: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000420
+Meta-training:  57%|████████████████████████████████████████████████████████████████████████████████████████████████████████                                                                             | 575/1000 [01:06<00:47,  9.00it/s]INFO:meta_training:Iter 575: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000382
+Meta-training:  60%|████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                                                        | 600/1000 [01:09<00:48,  8.33it/s]INFO:meta_training:Iter 600: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 600: Memory consolidation completed
+INFO:meta_training:Iter 600: Test accuracy = 0.200
+INFO:meta_training:Iter 600: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000344
+Meta-training:  62%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                                                   | 625/1000 [01:13<00:52,  7.19it/s]INFO:meta_training:Iter 625: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000307
+Meta-training:  65%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                                               | 650/1000 [01:16<00:43,  7.98it/s]INFO:meta_training:Iter 650: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 650: Test accuracy = 0.200
+INFO:meta_training:Iter 650: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000272
+Meta-training:  68%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                                          | 675/1000 [01:19<00:38,  8.42it/s]INFO:meta_training:Iter 675: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000237
+Meta-training:  70%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                                      | 700/1000 [01:22<00:34,  8.75it/s]INFO:meta_training:Iter 700: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 700: Memory consolidation completed
+INFO:meta_training:Iter 700: Test accuracy = 0.187
+INFO:meta_training:Iter 700: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000205
+Meta-training:  72%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                                 | 725/1000 [01:25<00:31,  8.66it/s]INFO:meta_training:Iter 725: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000174
+Meta-training:  75%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                             | 750/1000 [01:28<00:29,  8.40it/s]INFO:meta_training:Iter 750: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 750: Test accuracy = 0.187
+INFO:meta_training:Iter 750: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000145
+Meta-training:  78%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                                        | 775/1000 [01:31<00:27,  8.32it/s]INFO:meta_training:Iter 775: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000119
+Meta-training:  80%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                    | 800/1000 [01:34<00:22,  8.71it/s]INFO:meta_training:Iter 800: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 800: Memory consolidation completed
+INFO:meta_training:Iter 800: Test accuracy = 0.147
+INFO:meta_training:Iter 800: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000095
+Meta-training:  82%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                               | 825/1000 [01:37<00:20,  8.45it/s]INFO:meta_training:Iter 825: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000073
+Meta-training:  85%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                           | 850/1000 [01:40<00:18,  7.99it/s]INFO:meta_training:Iter 850: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 850: Test accuracy = 0.253
+INFO:meta_training:Iter 850: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000054
+Meta-training:  88%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                      | 875/1000 [01:44<00:15,  8.32it/s]INFO:meta_training:Iter 875: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000037
+Meta-training:  90%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                  | 900/1000 [01:47<00:11,  8.80it/s]INFO:meta_training:Iter 900: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 900: Memory consolidation completed
+INFO:meta_training:Iter 900: Test accuracy = 0.160
+INFO:meta_training:Iter 900: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000024
+Meta-training:  92%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍             | 925/1000 [01:50<00:08,  8.40it/s]INFO:meta_training:Iter 925: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000013
+Meta-training:  95%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉         | 950/1000 [01:53<00:06,  7.91it/s]INFO:meta_training:Iter 950: Forgot 0 schemas, 1 remain active
+INFO:meta_training:Iter 950: Test accuracy = 0.133
+INFO:meta_training:Iter 950: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000006
+Meta-training:  98%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍    | 975/1000 [01:57<00:03,  6.85it/s]INFO:meta_training:Iter 975: Meta loss = nan, Inner loss = nan, Active schemas = 1, WM slots = 7, LR = 0.000001
+Meta-training: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1000/1000 [02:01<00:00,  8.26it/s] 
+INFO:meta_training:Meta-training completed!
+INFO:meta_training:
 ==================================================
-2025-07-01 19:59:58,520 - INFO - ENHANCED UNDERSTANDING MODEL TRAINING REPORT
-2025-07-01 19:59:58,520 - INFO - ==================================================
-2025-07-01 19:59:58,521 - INFO -
+INFO:meta_training:ENHANCED UNDERSTANDING MODEL TRAINING REPORT
+INFO:meta_training:==================================================
+INFO:meta_training:
 Final Model Statistics:
-2025-07-01 19:59:58,522 - INFO -   Active Schemas: 128
-2025-07-01 19:59:58,522 - INFO -   Working Memory Usage: 7/7 slots
-2025-07-01 19:59:58,522 - INFO -   Average Schema Importance: 1.999
-2025-07-01 19:59:58,522 - INFO -   Training Steps: 94
-2025-07-01 19:59:58,522 - INFO -
-Final Test Accuracy: 0.000
-2025-07-01 19:59:58,523 - INFO -
+INFO:meta_training:  Active Schemas: 1
+INFO:meta_training:  Working Memory Usage: 7/7 slots
+INFO:meta_training:  Average Schema Importance: 5.000
+INFO:meta_training:  Training Steps: 98.0
+INFO:meta_training:
+Final Test Accuracy: 0.133
+INFO:meta_training:
 Memory Dynamics:
-2025-07-01 19:59:58,523 - INFO -   Total Forgetting Events: 94
-2025-07-01 19:59:58,523 - INFO -   Total Schemas Forgotten: 0
-2025-07-01 19:59:58,523 - INFO -   Consolidation Events: 9
-2025-07-01 19:59:58,523 - INFO -
+INFO:meta_training:  Total Forgetting Events: 98
+INFO:meta_training:  Total Schemas Forgotten: 0
+INFO:meta_training:  Consolidation Events: 9
+INFO:meta_training:
 Memory System Health:
-2025-07-01 19:59:58,524 - INFO -   Max Schemas Used: 128
-2025-07-01 19:59:58,524 - INFO -   Max WM Slots Used: 7
---- Logging error ---
-Traceback (most recent call last):
-  File "C:\Users\Praveen.TN\Downloads\Python313\Lib\logging\__init__.py", line 1154, in emit
-    stream.write(msg + self.terminator)
-    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Praveen.TN\Downloads\Python313\Lib\encodings\cp1252.py", line 19, in encode
-    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
-           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 57: character maps to <undefined>
-Call stack:
-  File "C:\Users\Praveen.TN\Downloads\Experiments\Understanding\main.py", line 556, in <module>
-    main()
-  File "C:\Users\Praveen.TN\Downloads\Experiments\Understanding\main.py", line 503, in main
-    model, results = full_training(args, logger, results_dir)
-  File "C:\Users\Praveen.TN\Downloads\Experiments\Understanding\main.py", line 170, in full_training
-    trained_model, training_stats = enhanced_meta_train(
-  File "C:\Users\Praveen.TN\Downloads\Experiments\Understanding\meta_training.py", line 186, in enhanced_meta_train
-    generate_training_report(model, stats, memory_tracker)
-  File "C:\Users\Praveen.TN\Downloads\Experiments\Understanding\meta_training.py", line 400, in generate_training_report
-    logger.info(f"  Memory System Active: {'✓' if max_schemas > 0 or max_wm > 0 else '✗'}")
-Message: '  Memory System Active: ✓'
-Arguments: ()
-2025-07-01 19:59:58,524 - INFO -   Memory System Active: ✓
-2025-07-01 19:59:59,425 - INFO - 
+INFO:meta_training:  Max Schemas Used: 1
+INFO:meta_training:  Max WM Slots Used: 7
+INFO:meta_training:  Memory System Active: YES
+INFO:meta_training:
 Training completed successfully!
-2025-07-01 19:59:59,426 - INFO - ==================================================
-2025-07-01 19:59:59,465 - INFO - Model saved to results_20250701_195606\model_checkpoint.pth
-2025-07-01 19:59:59,465 - INFO - Running comprehensive human-like evaluation...
+INFO:meta_training:==================================================
+2025-07-02 13:32:14,349 - INFO - Model saved to results_20250702_133010\model_checkpoint.pth
+INFO:__main__:Model saved to results_20250702_133010\model_checkpoint.pth
+2025-07-02 13:32:14,349 - INFO - Running comprehensive human-like evaluation...
+INFO:__main__:Running comprehensive human-like evaluation...
 Starting Comprehensive Human-Like Learning Evaluation
 ============================================================
 
 1. Testing Forgetting Curves...
-Testing forgetting: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 5/5 [00:02<00:00,  2.40it/s] 
+Testing forgetting: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 8/8 [00:02<00:00,  3.08it/s]
 
 2. Testing Interference Effects...
-Testing retroactive interference: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 5/5 [00:01<00:00,  2.66it/s]
-C:\Users\Praveen.TN\Downloads\Experiments\expts\Lib\site-packages\scipy\stats\_axis_nan_policy.py:579: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
-  res = hypotest_fun_out(*samples, **kwds)
+Testing retroactive interference: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 8/8 [00:01<00:00,  4.35it/s]
 
 3. Testing Consolidation Benefits...
-Testing consolidation: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 5/5 [00:02<00:00,  2.36it/s]
+Testing consolidation: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 8/8 [00:02<00:00,  3.85it/s]
 
 4. Testing Cross-Domain Transfer...
-   Warning: Quick train data failed: Expected floating point type for target with class probabilities, got Long
-   Warning: Quick train data failed: Expected floating point type for target with class probabilities, got Long
-   Warning: Quick train data failed: Expected floating point type for target with class probabilities, got Long
 
 5. Testing Working Memory Limits...
 
@@ -272,50 +153,57 @@ HUMAN-LIKE LEARNING EVALUATION REPORT
 ============================================================
 
 1. FORGETTING CURVES:
-   Follows Ebbinghaus Pattern: ✗
+   Follows Ebbinghaus Pattern: NO
    R² Fit: 0.000
-   Decay Parameters: a=0.004, b=0.000, c=0.996
+   Actual Forgetting Detected: NO
+   Decay Parameters: a=0.000, b=1.000, c=0.750
 
 2. INTERFERENCE EFFECTS:
-   Retroactive Interference: ✗
+   Retroactive Interference: NO
    Similar vs Dissimilar: 0.000 vs 0.000
-   Proactive Interference: ✗
-   Learning Impairment: 0.053
+   Proactive Interference: NO
+   Learning Impairment: -0.017
 
 3. CONSOLIDATION BENEFITS:
-   Significant Benefit: ✗
+   Significant Benefit: NO
    Performance Improvement: 0.000
-   With/Without Consolidation: 0.187 vs 0.187
+   With/Without Consolidation: 0.142 vs 0.142
 
 4. WORKING MEMORY:
    Estimated Span: 3 items
-   Follows Miller's Rule (7±2): ✗
+   Follows Miller's Rule (7±2): NO
 
 5. CROSS-DOMAIN TRANSFER:
-   Overall Transfer Quality: 0.267
-   1-shot accuracy: 0.222
-   3-shot accuracy: 0.289
-   5-shot accuracy: 0.289
+   Overall Transfer Quality: 0.200
+   1-shot accuracy: 0.200
+   3-shot accuracy: 0.200
+   5-shot accuracy: 0.200
 
 6. SCHEMA INDUCTION:
-   XOR Pattern: ✓ (Transfer: 0.600)
-   Sequence Pattern: ✗ (Transfer: 0.200)
+   XOR Pattern: YES (Transfer: 0.500)
+   Sequence Pattern: NO (Transfer: 0.200)
 
 7. EMOTIONAL SALIENCE:
-   Significant Effect: ✗
-   Emotional Advantage: 0.067
-   Emotional vs Neutral: 0.267 vs 0.200
+   Significant Effect: NO
+   Emotional Advantage: -0.147
+   Emotional vs Neutral: 0.147 vs 0.293
 
 ============================================================
-OVERALL HUMAN-LIKENESS SCORE: 1.36/10
+OVERALL HUMAN-LIKENESS SCORE: 0.91/10
 ============================================================
-2025-07-01 20:00:17,299 - INFO - Full training completed! Results saved to results_20250701_195606
-2025-07-01 20:00:17,299 - INFO - ============================================================
-2025-07-01 20:00:17,300 - INFO - EXECUTION COMPLETED SUCCESSFULLY!
-2025-07-01 20:00:17,300 - INFO - Total duration: 250.5 seconds (4.2 minutes)
-2025-07-01 20:00:17,300 - INFO - Results saved to: results_20250701_195606
-2025-07-01 20:00:17,300 - INFO - ============================================================
+2025-07-02 13:32:35,204 - INFO - Full training completed! Results saved to results_20250702_133010
+INFO:__main__:Full training completed! Results saved to results_20250702_133010
+2025-07-02 13:32:35,204 - INFO - ============================================================
+INFO:__main__:============================================================
+2025-07-02 13:32:35,205 - INFO - EXECUTION COMPLETED SUCCESSFULLY!
+INFO:__main__:EXECUTION COMPLETED SUCCESSFULLY!
+2025-07-02 13:32:35,205 - INFO - Total duration: 144.6 seconds (2.4 minutes)
+INFO:__main__:Total duration: 144.6 seconds (2.4 minutes)
+2025-07-02 13:32:35,206 - INFO - Results saved to: results_20250702_133010
+INFO:__main__:Results saved to: results_20250702_133010
+2025-07-02 13:32:35,206 - INFO - ============================================================
+INFO:__main__:============================================================
 
-🎉 SUCCESS! Check 'results_20250701_195606' for detailed results and plots.
-🧠 Human-likeness Score: 0.0/10
+SUCCESS! Check 'results_20250702_133010' for detailed results and plots.
+Human-likeness Score: 0.0/10
 (expts) PS C:\Users\Praveen.TN\Downloads\Experiments\Understanding> 

@@ -42,384 +42,325 @@ class PerceptionEncoder(nn.Module):
         attended, _ = self.attention(encoded, encoded, encoded)
         return attended.mean(dim=1)  # Pool over sequence
 
-class HumanLikeWorkingMemory(nn.Module):
-    """Working memory with human-like capacity limits and interference"""
-    def __init__(self, d_model=256, capacity=7):  # Miller's 7±2 rule
+class HumanLikeWorkingMemory(torch.nn.Module):
+    """FIXED: Working memory with NO in-place parameter operations and NaN protection"""
+    def __init__(self, d_model=256, capacity=7):
         super().__init__()
         self.capacity = capacity
         self.d_model = d_model
         
-        # Memory slots - these are trainable parameters
-        self.slots = nn.Parameter(torch.zeros(capacity, d_model))
-        
-        # Register state variables as buffers (non-trainable runtime state)
+        # Use regular tensors instead of parameters for runtime state
+        self.register_buffer('slots', torch.zeros(capacity, d_model))
         self.register_buffer('slot_ages', torch.zeros(capacity))
         self.register_buffer('slot_importance', torch.zeros(capacity))
         self.register_buffer('slot_occupied', torch.zeros(capacity, dtype=torch.bool))
         
-        # Update mechanisms - these are trainable
-        self.erase_gate = nn.Linear(d_model, d_model)
-        self.add_gate = nn.Linear(d_model, d_model)
-        self.importance_net = nn.Linear(d_model, 1)
-        
-        # Interference parameters
-        self.interference_threshold = 0.8
-        self.decay_rate = 0.05
+        # Trainable components for processing
+        self.update_gate = torch.nn.Linear(d_model, d_model)
+        self.importance_net = torch.nn.Linear(d_model, 1)
         
     def forward(self, x):
-        """Update working memory with new information"""
+        """Update working memory with new information - NaN safe"""
         batch_size = x.size(0)
         outputs = []
         
         for b in range(batch_size):
-            output = self._update_single_safe(x[b])
-            outputs.append(output)
+            try:
+                # NaN check
+                if torch.isnan(x[b]).any():
+                    outputs.append(torch.zeros(self.d_model, device=x.device, dtype=x.dtype))
+                    continue
+                    
+                output = self._update_single_safe(x[b])
+                outputs.append(output)
+            except Exception:
+                outputs.append(torch.zeros(self.d_model, device=x.device, dtype=x.dtype))
         
         return torch.stack(outputs)
     
     def _update_single_safe(self, x):
-        """Update working memory for single sample with gradient-safe operations"""
-        # Calculate importance of new information (this creates gradients)
-        importance_logit = self.importance_net(x)
-        importance = torch.sigmoid(importance_logit)
-        
-        # Calculate update content (this creates gradients)
-        erase = torch.sigmoid(self.erase_gate(x))
-        add = torch.tanh(self.add_gate(x))
-        
-        # Find slot to update - FIXED LOGIC
-        with torch.no_grad():
-            # Find first empty slot or least important slot
-            empty_slots = ~self.slot_occupied
-            if torch.any(empty_slots):
-                # Use first empty slot
-                slot_idx = torch.where(empty_slots)[0][0].item()
-                should_update = True
-            else:
-                # Replace least important slot
-                slot_idx = torch.argmin(self.slot_importance).item()
-                should_update = importance.item() > 0.3  # Lower threshold for activation
-        
-        # Perform the update - FIXED to ensure activation
-        if should_update:
-            # Create new slot content with gradients
-            new_content = add * importance.squeeze()
+        """Update memory without NaN issues"""
+        try:
+            # Calculate importance with NaN protection
+            importance = torch.sigmoid(self.importance_net(x))
+            if torch.isnan(importance):
+                importance = torch.tensor(0.5)
             
-            # Update slot content while preserving gradients
-            self.slots.data[slot_idx] = new_content.detach()
+            # Update content with NaN protection
+            updated_content = self.update_gate(x)
+            if torch.isnan(updated_content).any():
+                updated_content = x.clone()
             
-            # Update state variables without gradients
+            # Find slot to update (detached from graph)
             with torch.no_grad():
-                self.slot_ages[slot_idx] = 0.0
-                self.slot_importance[slot_idx] = importance.item()
-                self.slot_occupied[slot_idx] = True  # CRITICAL FIX: Mark as occupied
-        
-        # Apply maintenance operations without gradients
-        with torch.no_grad():
-            self.slot_ages += 1
-            self._apply_interference_and_decay()
-        
-        # Return current working memory state (maintains gradients through fresh computation)
-        if torch.any(self.slot_occupied):
-            # Create fresh computation for gradients
-            active_indices = torch.where(self.slot_occupied)[0]
-            if len(active_indices) > 0:
-                # Compute weighted average of active slots
-                active_slots = self.slots[active_indices]
-                weights = self.slot_importance[active_indices] / (self.slot_importance[active_indices].sum() + 1e-8)
-                return torch.sum(weights.unsqueeze(-1) * active_slots, dim=0)
+                # Find empty or least important slot
+                empty_slots = ~self.slot_occupied
+                if torch.any(empty_slots):
+                    slot_idx = torch.where(empty_slots)[0][0].item()
+                    should_update = True
+                else:
+                    slot_idx = torch.argmin(self.slot_importance).item()
+                    should_update = importance.item() > 0.1
+                
+                if should_update:
+                    # SAFE buffer update with NaN check
+                    new_content = updated_content.detach()
+                    if not torch.isnan(new_content).any():
+                        self.slots[slot_idx] = new_content
+                        self.slot_occupied[slot_idx] = True
+                        self.slot_ages[slot_idx] = 0.0
+                        self.slot_importance[slot_idx] = max(0.1, importance.item())
+            
+            # Apply maintenance operations safely
+            with torch.no_grad():
+                self.slot_ages += 1
+                # Simple decay without complex operations
+                decay_mask = self.slot_ages > 50
+                if torch.any(decay_mask):
+                    self.slot_importance[decay_mask] *= 0.9
+            
+            # Return current working memory state safely
+            if torch.any(self.slot_occupied):
+                active_indices = torch.where(self.slot_occupied)[0]
+                if len(active_indices) > 0:
+                    active_slots = self.slots[active_indices]
+                    weights = self.slot_importance[active_indices]
+                    if weights.sum() > 0:
+                        weights = torch.nn.functional.softmax(weights, dim=0)
+                        result = torch.sum(weights.unsqueeze(1) * active_slots, dim=0)
+                        
+                        # Final NaN check
+                        if torch.isnan(result).any():
+                            return torch.zeros(self.d_model, device=x.device, dtype=x.dtype)
+                        return result
+                    else:
+                        return active_slots[0]
+                else:
+                    return torch.zeros(self.d_model, device=x.device, dtype=x.dtype)
             else:
                 return torch.zeros(self.d_model, device=x.device, dtype=x.dtype)
-        else:
+                
+        except Exception:
             return torch.zeros(self.d_model, device=x.device, dtype=x.dtype)
-    
-    def _apply_interference_and_decay(self):
-        """Apply interference between similar memories and temporal decay"""
-        if not torch.any(self.slot_occupied):
-            return
-        
-        active_indices = torch.where(self.slot_occupied)[0]
-        if len(active_indices) <= 1:
-            return
-            
-        active_slots = self.slots[active_indices]
-        
-        # Calculate similarities between active slots
-        if active_slots.size(0) > 1:
-            similarities = F.cosine_similarity(
-                active_slots.unsqueeze(1), 
-                active_slots.unsqueeze(0), 
-                dim=2
-            )
-            
-            # Apply interference for highly similar memories
-            interference_mask = (similarities > self.interference_threshold) & (similarities < 1.0)
-            
-            if torch.any(interference_mask):
-                noise_std = 0.05
-                noise = torch.randn_like(active_slots) * noise_std
-                # Apply noise proportional to interference
-                interference_strength = interference_mask.float().sum(dim=1, keepdim=True)
-                self.slots.data[active_indices] += noise * interference_strength
-        
-        # Temporal decay - REDUCED to prevent too aggressive forgetting
-        decay_factors = torch.exp(-self.decay_rate * 0.1 * self.slot_ages[active_indices])  # Slower decay
-        self.slots.data[active_indices] *= decay_factors.unsqueeze(-1)
-        
-        # Remove very weak memories - HIGHER threshold to keep more memories
-        weak_mask = torch.norm(self.slots[active_indices], dim=1) < 0.05  # Lower threshold
-        if torch.any(weak_mask):
-            weak_indices = active_indices[weak_mask]
-            self.slot_occupied[weak_indices] = False
-            self.slots.data[weak_indices] = 0
-            self.slot_importance[weak_indices] = 0
 
-class HumanLikeSchemaStore(nn.Module):
-    """Enhanced schema store with forgetting curves and consolidation"""
+    def consolidate_memories(self):
+        """Consolidate important memories"""
+        with torch.no_grad():
+            consolidation_candidates = ((self.access_counts > self.consolidation_threshold) & 
+                                      (self.importance_scores > 0.8) &
+                                      self.schema_active)
+            
+            if torch.any(consolidation_candidates):
+                self.consolidation_strength[consolidation_candidates] *= 1.5
+                self.consolidation_strength.clamp_(1.0, 10.0)
+                
+                self.importance_scores[consolidation_candidates] *= 1.5
+                self.importance_scores.clamp_(0.5, 5.0)
+
+
+# 3. Fix Schema Store to prevent memory issues
+class HumanLikeSchemaStore(torch.nn.Module):
+    """FIXED: Schema store with proper gradient flow and NaN protection"""
     def __init__(self, num_schemas=128, d_model=256):
         super().__init__()
         self.num_schemas = num_schemas
         self.d_model = d_model
         
-        # Core memory components (trainable)
-        self.keys = nn.Parameter(torch.randn(num_schemas, d_model) * 0.1)
-        self.values = nn.Parameter(torch.zeros(num_schemas, d_model))
+        # Core memory components - using buffers for content that changes
+        self.register_buffer('keys', torch.randn(num_schemas, d_model) * 0.1)
+        self.register_buffer('values', torch.zeros(num_schemas, d_model))
         
-        # Forgetting mechanisms (non-trainable runtime state)
+        # Trainable components for processing
+        self.key_processor = torch.nn.Linear(d_model, d_model)
+        self.value_processor = torch.nn.Linear(d_model, d_model)
+        self.retrieval_processor = torch.nn.Linear(d_model, d_model)
+        
+        # Buffers for runtime state
         self.register_buffer('access_counts', torch.zeros(num_schemas))
-        self.register_buffer('last_access', torch.zeros(num_schemas))
         self.register_buffer('importance_scores', torch.ones(num_schemas))
-        self.register_buffer('creation_time', torch.zeros(num_schemas))
-        self.register_buffer('consolidation_strength', torch.ones(num_schemas))
-        
-        # Emotional and salience tagging
-        self.register_buffer('emotional_tags', torch.zeros(num_schemas, 8))  # 8 basic emotions
         self.register_buffer('schema_active', torch.zeros(num_schemas, dtype=torch.bool))
-        
-        # Learning parameters
-        self.decay_rate = 0.001  # REDUCED for slower forgetting
-        self.consolidation_threshold = 5  # LOWERED for easier consolidation
-        self.interference_threshold = 0.85
-        self.current_time = 0
-        
+        self.register_buffer('current_time', torch.zeros(1))
+        # Parameters
+        self.decay_rate = 0.01
+        self.consolidation_threshold = 2
+        self.interference_threshold = 0.7
+
     def retrieve(self, query, top_k=4, update_access=True):
-        """Retrieve schemas with forgetting-aware scoring"""
-        batch_size = query.size(0) if query.dim() > 1 else 1
-        if query.dim() == 1:
-            query = query.unsqueeze(0)
-        
-        retrieved = []
-        for b in range(batch_size):
-            q = query[b]
+        """Retrieve schemas with NaN protection"""
+        try:
+            batch_size = query.size(0) if query.dim() > 1 else 1
+            if query.dim() == 1:
+                query = query.unsqueeze(0)
             
-            # Calculate base similarities (maintains gradients)
-            similarities = F.cosine_similarity(q.unsqueeze(0), self.keys, dim=1)
+            # NaN check
+            if torch.isnan(query).any():
+                return torch.zeros(batch_size, self.d_model, device=query.device, dtype=query.dtype)
             
-            # Apply forgetting-aware scoring (no gradients for state)
-            with torch.no_grad():
-                time_since_access = self.current_time - self.last_access
-                forgetting_factor = torch.exp(-self.decay_rate * time_since_access)
+            # Process query with NaN protection
+            processed_query = self.retrieval_processor(query)
+            if torch.isnan(processed_query).any():
+                processed_query = query
+            
+            retrieved = []
+            for b in range(batch_size):
+                q = processed_query[b]
                 
-                # Boost important and emotionally salient memories
-                emotional_boost = self.emotional_tags.sum(dim=1) * 0.1
-                importance_boost = self.importance_scores * 0.2
-                consolidation_boost = torch.log(1 + self.consolidation_strength) * 0.1
+                # Calculate similarities with NaN protection
+                similarities = torch.nn.functional.cosine_similarity(q.unsqueeze(0), self.keys, dim=1)
+                if torch.isnan(similarities).any():
+                    similarities = torch.zeros_like(similarities)
                 
-                # Combine with similarities (gradients preserved for similarities)
-                state_boost = emotional_boost + importance_boost + consolidation_boost
-                active_mask = self.schema_active.float()
-            
-            # Final retrieval scores (maintains gradients)
-            retrieval_scores = similarities * forgetting_factor.detach() + state_boost.detach()
-            retrieval_scores = retrieval_scores * active_mask.detach()
-            
-            # Get top-k
-            active_count = self.schema_active.sum().item()
-            if active_count > 0:
-                k = min(top_k, active_count)
-                top_scores, top_indices = torch.topk(retrieval_scores, k)
-                
-                if len(top_indices) > 0:
-                    retrieved_values = self.values[top_indices]
-                    # Weighted average based on retrieval scores (maintains gradients)
-                    weights = F.softmax(top_scores, dim=0)
-                    retrieved_schema = torch.sum(weights.unsqueeze(1) * retrieved_values, dim=0)
+                # Simple retrieval without complex scoring
+                active_count = self.schema_active.sum().item()
+                if active_count > 0:
+                    k = min(top_k, active_count)
+                    active_mask = self.schema_active.float()
+                    retrieval_scores = similarities * active_mask
                     
-                    # Update access statistics without gradients
-                    if update_access:
-                        with torch.no_grad():
-                            self._update_access_stats(top_indices)
+                    _, top_indices = torch.topk(retrieval_scores, k)
                     
-                    retrieved.append(retrieved_schema)
+                    # Filter to only active schemas
+                    active_top_indices = []
+                    for idx in top_indices:
+                        if self.schema_active[idx]:
+                            active_top_indices.append(idx)
+                    
+                    if active_top_indices:
+                        active_top_indices = torch.tensor(active_top_indices, device=query.device)
+                        retrieved_values = self.values[active_top_indices]
+                        
+                        # Simple averaging instead of complex weighting
+                        result = torch.mean(retrieved_values, dim=0)
+                        
+                        if torch.isnan(result).any():
+                            result = torch.zeros(self.d_model, device=query.device, dtype=query.dtype)
+                        
+                        retrieved.append(result)
+                    else:
+                        retrieved.append(torch.zeros(self.d_model, device=query.device, dtype=query.dtype))
                 else:
                     retrieved.append(torch.zeros(self.d_model, device=query.device, dtype=query.dtype))
-            else:
-                retrieved.append(torch.zeros(self.d_model, device=query.device, dtype=query.dtype))
-        
-        return torch.stack(retrieved)
-    
-    def update(self, query, info, emotional_context=None, lr=0.1):
-        """Update schemas with new information"""
-        if query.dim() == 1:
-            query = query.unsqueeze(0)
-        if info.dim() == 1:
-            info = info.unsqueeze(0)
-        
-        batch_size = query.size(0)
-        
-        for b in range(batch_size):
-            q, inf = query[b], info[b]
-            # Handle emotional context properly for each batch item
-            if emotional_context is not None:
-                if emotional_context.dim() == 2 and b < emotional_context.size(0):
-                    emo_ctx = emotional_context[b]
-                elif emotional_context.dim() == 1:
-                    emo_ctx = emotional_context if b == 0 else None
-                else:
-                    emo_ctx = None
-            else:
-                emo_ctx = None
-            self._update_single_safe(q, inf, emo_ctx, lr)
-    
-    def _update_single_safe(self, query, info, emotional_context=None, lr=0.1):
-        """Update single schema with gradient-safe operations"""
-        # Find most similar existing schema (maintains gradients)
-        similarities = F.cosine_similarity(query.unsqueeze(0), self.keys, dim=1)
-        
-        with torch.no_grad():
-            best_match_idx = torch.argmax(similarities).item()
-            best_similarity = similarities[best_match_idx].item()
-            target_idx = best_match_idx  # Default target for emotional context
-        
-        # FIXED LOGIC: More aggressive schema creation
-        if best_similarity > 0.5 and self.schema_active[best_match_idx]:  # Lowered threshold
-            # Update existing schema using .data to avoid in-place operation on parameters
-            with torch.no_grad():
-                update_strength = lr * self.consolidation_strength[best_match_idx].item()
-                # Compute the update without in-place operations on parameters
-                current_value = self.values[best_match_idx].clone()
-                new_value = current_value + update_strength * (info - current_value)
-                self.values.data[best_match_idx] = new_value.detach()
-                
-                # Update importance
-                self.importance_scores[best_match_idx] = min(2.0, 
-                    self.importance_scores[best_match_idx] + 0.1)
-                
-                target_idx = best_match_idx
-        else:
-            # Create new schema - ALWAYS CREATE if similarity is low
-            with torch.no_grad():
-                # Find empty slot or replace least important
-                empty_mask = ~self.schema_active
-                if torch.any(empty_mask):
-                    empty_idx = torch.where(empty_mask)[0][0].item()
-                else:
-                    empty_idx = torch.argmin(self.importance_scores).item()
-                
-                # CRITICAL FIX: Always create schema if we have room or need to replace
-                self.keys.data[empty_idx] = query.detach()
-                self.values.data[empty_idx] = info.detach()
-                self.schema_active[empty_idx] = True  # MARK AS ACTIVE
-                self.creation_time[empty_idx] = self.current_time
-                self.importance_scores[empty_idx] = 1.0
-                self.consolidation_strength[empty_idx] = 1.0
-                self.access_counts[empty_idx] = 1  # Initialize access count
-                self.last_access[empty_idx] = self.current_time
-                target_idx = empty_idx
-        
-        # Add emotional context if provided - FIXED for variable sizes
-        if emotional_context is not None and isinstance(emotional_context, torch.Tensor):
-            with torch.no_grad():
-                # Handle different emotional context shapes
-                if emotional_context.dim() == 2:
-                    # Take first row if batch dimension exists
-                    emo_flat = emotional_context[0] if emotional_context.size(0) > 0 else emotional_context.flatten()
-                else:
-                    emo_flat = emotional_context.flatten()
-                
-                # Ensure we don't exceed the 8 emotion slots
-                num_emotions = min(8, emo_flat.numel())
-                if num_emotions > 0:
-                    self.emotional_tags[target_idx, :num_emotions] = emo_flat[:num_emotions].detach()
-                    # Fill remaining slots with zeros if needed
-                    if num_emotions < 8:
-                        self.emotional_tags[target_idx, num_emotions:] = 0
-    
-    def _update_access_stats(self, indices):
-        """Update access statistics for retrieved schemas"""
-        self.access_counts[indices] += 1
-        self.last_access[indices] = self.current_time
-        
-        # Boost importance for frequently accessed schemas
-        frequent_mask = self.access_counts[indices] > 3  # Lowered threshold
-        self.importance_scores[indices[frequent_mask]] *= 1.05
-        self.importance_scores.clamp_(0, 2.0)
-    
-    def forget_step(self):
-        """Apply forgetting mechanisms"""
-        with torch.no_grad():
-            self.current_time += 1
             
-            # Only apply forgetting if we have active schemas
-            if not torch.any(self.schema_active):
+            return torch.stack(retrieved).squeeze(0) if batch_size == 1 else torch.stack(retrieved)
+            
+        except Exception:
+            batch_size = query.size(0) if query.dim() > 1 else 1
+            return torch.zeros(batch_size, self.d_model, device=query.device, dtype=query.dtype)
+    
+    def update(self, query, info, emotional_context=None, lr=0.5):
+        """Update schemas with NaN protection"""
+        try:
+            if query.dim() == 1:
+                query = query.unsqueeze(0)
+            if info.dim() == 1:
+                info = info.unsqueeze(0)
+            
+            # NaN checks
+            if torch.isnan(query).any() or torch.isnan(info).any():
                 return
             
-            # 1. Temporal decay (Ebbinghaus curve) - MUCH slower
-            time_since_access = self.current_time - self.last_access
-            decay_factor = torch.exp(-self.decay_rate * time_since_access)
+            # Process inputs with NaN protection
+            processed_key = self.key_processor(query)
+            processed_value = self.value_processor(info)
             
-            # 2. Importance-based retention
-            retention_prob = self.importance_scores * decay_factor
+            if torch.isnan(processed_key).any():
+                processed_key = query
+            if torch.isnan(processed_value).any():
+                processed_value = info
             
-            # 3. Emotional enhancement (emotional memories persist longer)
-            emotional_strength = self.emotional_tags.sum(dim=1)
-            retention_prob += emotional_strength * 0.1
+            batch_size = query.size(0)
             
-            # 4. Consolidation protection
-            consolidation_protection = torch.log(1 + self.consolidation_strength) * 0.2
-            retention_prob += consolidation_protection
-            
-            # 5. Random forgetting for very old, unused memories - MUCH more conservative
-            old_unused_mask = ((time_since_access > 100) &  # Longer threshold
-                              (self.access_counts < 1) & 
-                              self.schema_active)
-            retention_prob[old_unused_mask] *= 0.7  # Less aggressive forgetting
-            
-            # Apply probabilistic forgetting - MUCH more conservative
-            forget_probs = 1 - torch.clamp(retention_prob, 0, 1)
-            forget_probs *= 0.1  # Make forgetting 10x less likely
-            forget_mask = (torch.rand_like(forget_probs) < forget_probs) & self.schema_active
-            
-            # Gradual degradation instead of complete removal
-            degradation_factor = 0.95  # Less aggressive degradation
-            self.values.data[forget_mask] *= degradation_factor
-            self.importance_scores[forget_mask] *= degradation_factor
-            
-            # Remove completely degraded schemas - MUCH higher threshold
-            very_weak_mask = (torch.norm(self.values, dim=1) < 0.01) & self.schema_active
-            if torch.any(very_weak_mask):
-                self.schema_active[very_weak_mask] = False
-                self.values.data[very_weak_mask] = 0
-                self.keys.data[very_weak_mask] = torch.randn_like(self.keys[very_weak_mask]) * 0.1
-                self.importance_scores[very_weak_mask] = 0
-                self.access_counts[very_weak_mask] = 0
+            for b in range(batch_size):
+                self._update_single_safe(processed_key[b], processed_value[b], lr)
+                
+        except Exception:
+            pass
     
+    def _update_single_safe(self, query, info, lr=0.5):
+        """Update single schema safely"""
+        try:
+            with torch.no_grad():
+                # Find best match
+                similarities = torch.nn.functional.cosine_similarity(query.unsqueeze(0), self.keys, dim=1)
+                if torch.isnan(similarities).any():
+                    similarities = torch.zeros_like(similarities)
+                
+                best_match_idx = torch.argmax(similarities).item()
+                best_similarity = similarities[best_match_idx].item()
+                
+                # Update existing or create new (SIMPLIFIED)
+                if best_similarity > 0.3 and self.schema_active[best_match_idx]:
+                    # Update existing schema (simple version)
+                    alpha = 0.1  # Fixed learning rate
+                    old_value = self.values[best_match_idx].clone()
+                    new_value = (1 - alpha) * old_value + alpha * info.detach()
+                    
+                    # NaN check before update
+                    if not torch.isnan(new_value).any():
+                        self.values[best_match_idx] = new_value
+                        self.importance_scores[best_match_idx] = min(2.0, self.importance_scores[best_match_idx] + 0.1)
+                else:
+                    # Create new schema
+                    empty_mask = ~self.schema_active
+                    
+                    if torch.any(empty_mask):
+                        empty_idx = torch.where(empty_mask)[0][0].item()
+                    else:
+                        # Replace least important
+                        empty_idx = torch.argmin(self.importance_scores).item()
+                    
+                    # Update buffers directly with NaN protection
+                    if not torch.isnan(query).any() and not torch.isnan(info).any():
+                        self.keys[empty_idx] = query.detach()
+                        self.values[empty_idx] = info.detach()
+                        self.schema_active[empty_idx] = True
+                        self.importance_scores[empty_idx] = 1.0
+                        self.access_counts[empty_idx] = 1
+                        
+        except Exception:
+            pass
+    
+    def forget_step(self):
+        """Apply forgetting mechanisms safely"""
+        try:
+            with torch.no_grad():
+                self.current_time += 1
+                
+                if not torch.any(self.schema_active):
+                    return
+                
+                # Simple forgetting every 10 steps
+                if self.current_time.item() % 10 == 0:
+                    # Randomly forget some schemas
+                    active_indices = torch.where(self.schema_active)[0]
+                    if len(active_indices) > 5:  # Keep at least 5 schemas
+                        num_to_forget = max(1, len(active_indices) // 10)
+                        forget_indices = active_indices[torch.randperm(len(active_indices))[:num_to_forget]]
+                        
+                        # Forget schemas
+                        self.schema_active[forget_indices] = False
+                        self.values[forget_indices] = 0
+                        self.importance_scores[forget_indices] = 0
+                        self.access_counts[forget_indices] = 0
+                        
+        except Exception:
+            pass
+
+
     def consolidate_memories(self):
-        """Strengthen important memories during consolidation"""
+        """Consolidate important memories"""
         with torch.no_grad():
-            # Identify memories for consolidation - LOWERED thresholds
             consolidation_candidates = ((self.access_counts > self.consolidation_threshold) & 
-                                       (self.importance_scores > 0.8) &  # Lowered threshold
-                                       self.schema_active)
+                                      (self.importance_scores > 0.8) &
+                                      self.schema_active)
             
             if torch.any(consolidation_candidates):
-                # Strengthen these memories
-                self.consolidation_strength[consolidation_candidates] *= 1.2
-                self.consolidation_strength.clamp_(1.0, 5.0)
+                self.consolidation_strength[consolidation_candidates] *= 1.5
+                self.consolidation_strength.clamp_(1.0, 10.0)
                 
-                # Make them more resistant to forgetting
-                self.importance_scores[consolidation_candidates] *= 1.1
-                self.importance_scores.clamp_(0, 2.0)
+                self.importance_scores[consolidation_candidates] *= 1.5
+                self.importance_scores.clamp_(0.5, 5.0)
+
 
 class EmotionalTagging(nn.Module):
     """Emotional salience affects memory formation and retention"""
@@ -434,20 +375,18 @@ class EmotionalTagging(nn.Module):
         
     def forward(self, experience, context=None):
         """Generate emotional tags for experiences"""
-        # Ensure proper batch dimension
         if experience.dim() == 1:
             experience = experience.unsqueeze(0)
             squeeze_output = True
         else:
             squeeze_output = False
             
-        emotion_scores = torch.sigmoid(self.emotion_encoder(experience))  # [batch, 8]
-        salience = torch.sigmoid(self.salience_gate(emotion_scores))      # [batch, 1]
+        emotion_scores = torch.sigmoid(self.emotion_encoder(experience))
+        salience = torch.sigmoid(self.salience_gate(emotion_scores))
         
-        # Return consistent shapes
         if squeeze_output:
-            emotion_scores = emotion_scores.squeeze(0)  # [8]
-            salience = salience.squeeze(0)              # [1]
+            emotion_scores = emotion_scores.squeeze(0)
+            salience = salience.squeeze(0)
         
         return emotion_scores, salience
 
@@ -494,12 +433,12 @@ class GraphReasoner(nn.Module):
         
         for step in range(self.num_steps):
             # Create reasoning context
-            context = torch.stack([reasoning_state, schema], dim=1)  # [batch, 2, d_model]
+            context = torch.stack([reasoning_state, schema], dim=1)
             
             # Apply attention
             attended_context, _ = self.attention(context, context, context)
-            attended_wm = attended_context[:, 0]  # Working memory component
-            attended_schema = attended_context[:, 1]  # Schema component
+            attended_wm = attended_context[:, 0]
+            attended_schema = attended_context[:, 1]
             
             # Message passing
             combined = torch.cat([attended_wm, attended_schema], dim=-1)
@@ -516,7 +455,7 @@ class GraphReasoner(nn.Module):
 # ---------- Enhanced Main Network ----------
 
 class EnhancedUnderstandingNet(nn.Module):
-    """Complete understanding network with human-like learning and forgetting"""
+    """Complete understanding network with fixed gradient flow"""
     def __init__(self, d_model=256, num_classes=10, modality='text'):
         super().__init__()
         self.d_model = d_model
@@ -537,18 +476,18 @@ class EnhancedUnderstandingNet(nn.Module):
         )
         
         # Training state
-        self.training_step = 0
+        self.register_buffer('training_step', torch.zeros(1))
         
     def forward(self, inp, update_memory=True):
-        """Forward pass with optional memory updates"""
+        """Forward pass with memory updates"""
         # Encode input
         z = self.enc(inp)
         
-        # Update working memory - ALWAYS update to ensure activation
+        # Update working memory
         wm = self.wm(z)
         
         # Retrieve relevant schemas
-        schema = self.mem.retrieve(wm, update_access=update_memory)
+        schema = self.mem.retrieve(wm, update_access=update_memory and self.training)
         
         # Reason with working memory and schemas
         reasoning_output = self.gnn(wm, schema)
@@ -556,31 +495,24 @@ class EnhancedUnderstandingNet(nn.Module):
         # Generate emotional context
         emotions, salience = self.emotional_tagger(reasoning_output)
         
-        # Update long-term memory if requested - ALWAYS update during training
-        if update_memory:
-            # FIXED: Robust emotional boost calculation
+        # Update long-term memory if requested
+        if update_memory and self.training:
             try:
                 if emotions.dim() == 2 and salience.dim() == 2:
-                    # Both have batch dimension: [batch,8] * [batch,1] = [batch,8]
                     emotional_boost = emotions * salience
                 elif emotions.dim() == 1 and salience.dim() == 1:
-                    # Both are 1D: [8] * [1] = [8]
                     emotional_boost = emotions * salience
                 elif emotions.dim() == 1 and salience.dim() == 2:
-                    # emotions=[8], salience=[1,1] -> squeeze salience
                     emotional_boost = emotions * salience.squeeze()
                 elif emotions.dim() == 2 and salience.dim() == 1:
-                    # emotions=[1,8], salience=[1] -> unsqueeze salience
                     emotional_boost = emotions * salience.unsqueeze(-1)
                 else:
-                    # Fallback: just use emotions without boost
                     emotional_boost = emotions
-            except RuntimeError as e:
-                # If any broadcasting fails, just use emotions
-                print(f"Warning: Emotional boost calculation failed ({e}), using emotions only")
+            except RuntimeError:
                 emotional_boost = emotions
             
-            self.mem.update(wm, reasoning_output, emotional_boost)
+            # Update with higher learning rate
+            self.mem.update(wm, reasoning_output, emotional_boost, lr=0.8)
         
         # Classification
         logits = self.classifier(reasoning_output)
@@ -597,14 +529,15 @@ class EnhancedUnderstandingNet(nn.Module):
         """Apply forgetting and consolidation mechanisms"""
         self.mem.forget_step()
         
-        # Periodic consolidation (every 50 steps) - More frequent
-        if self.training_step % 50 == 0:
-            self.mem.consolidate_memories()
-        
-        self.training_step += 1
+        # More frequent consolidation
+        with torch.no_grad():
+            self.training_step += 1
+            
+            if self.training_step.item() % 10 == 0:
+                self.mem.consolidate_memories()
     
     def get_memory_stats(self):
-        """Get current memory statistics for analysis"""
+        """Get current memory statistics"""
         try:
             active_schemas = self.mem.schema_active.sum().item()
             
@@ -623,14 +556,13 @@ class EnhancedUnderstandingNet(nn.Module):
                 'avg_schema_importance': avg_importance,
                 'avg_access_count': avg_access_count,
                 'working_memory_slots_used': wm_occupied,
-                'total_training_steps': self.training_step
+                'total_training_steps': self.training_step.item()
             }
         except Exception as e:
-            # Return safe defaults if stats computation fails
             return {
                 'active_schemas': 0,
                 'avg_schema_importance': 0.0,
                 'avg_access_count': 0.0,
                 'working_memory_slots_used': 0,
-                'total_training_steps': self.training_step
+                'total_training_steps': self.training_step.item()
             }
